@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "485865464939",
+    "project_id": "yelloskye-bf39c",
+    "storage_bucket": "yelloskye-bf39c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:485865464939:android:b8aa954ad41e9d037c7d2e",
+        "android_client_info": {
+          "package_name": "com.example.yelloskye"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCHkdf-eOJz6X-ovn4tVUbvd951PF5JVcI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
