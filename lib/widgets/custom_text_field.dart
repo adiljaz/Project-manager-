@@ -12,7 +12,7 @@ class AuthTextField extends StatefulWidget {
   final VoidCallback? onEditingComplete;
   final Function(String)? onChanged;
   final FocusNode? focusNode;
-  final int? maxLength; 
+  final int? maxLength;
   final TextInputAction? textInputAction;
   final bool autofocus;
   final EdgeInsetsGeometry? contentPadding;
@@ -58,7 +58,7 @@ class _AuthTextFieldState extends State<AuthTextField> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -79,6 +79,7 @@ class _AuthTextFieldState extends State<AuthTextField> {
           obscureText: widget.obscureText ? _isObscured : false,
           keyboardType: widget.keyboardType,
           validator: widget.validator,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
           onEditingComplete: widget.onEditingComplete,
           onChanged: widget.onChanged,
           maxLength: widget.maxLength,
@@ -91,38 +92,42 @@ class _AuthTextFieldState extends State<AuthTextField> {
           decoration: InputDecoration(
             hintText: widget.hintText,
             hintStyle: const TextStyle(color: Colors.black54),
-            prefixIcon: widget.prefixIcon != null ? Icon(
-              widget.prefixIcon,
-              color: Colors.black,
-              size: 22,
-            ) : null,
-            suffixIcon: widget.obscureText
-                ? IconButton(
-                    icon: Icon(
-                      _isObscured ? Icons.visibility_off : Icons.visibility,
-                      color: Colors.black54,
-                      size: 22,
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        _isObscured = !_isObscured;
-                      });
-                    },
-                  )
-                : widget.suffixIcon,
-            contentPadding: widget.contentPadding ?? 
+            prefixIcon:
+                widget.prefixIcon != null
+                    ? Icon(widget.prefixIcon, color: Colors.black, size: 22)
+                    : null,
+            suffixIcon:
+                widget.obscureText
+                    ? IconButton(
+                      icon: Icon(
+                        _isObscured ? Icons.visibility_off : Icons.visibility,
+                        color: Colors.black54,
+                        size: 22,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _isObscured = !_isObscured;
+                        });
+                      },
+                    )
+                    : widget.suffixIcon,
+            contentPadding:
+                widget.contentPadding ??
                 const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide(color: widget.normalBorderColor),
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12), 
+              borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide(color: widget.normalBorderColor),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: widget.focusedBorderColor, width: 2),
+              borderSide: BorderSide(
+                color: widget.focusedBorderColor,
+                width: 2,
+              ),
             ),
             errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
@@ -133,7 +138,8 @@ class _AuthTextFieldState extends State<AuthTextField> {
               borderSide: BorderSide(color: widget.errorBorderColor, width: 2),
             ),
             filled: true,
-            fillColor: theme.inputDecorationTheme.fillColor ?? Colors.grey.shade50,
+            fillColor:
+                theme.inputDecorationTheme.fillColor ?? Colors.grey.shade50,
           ),
         ),
       ],

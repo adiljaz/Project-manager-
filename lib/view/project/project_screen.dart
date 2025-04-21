@@ -63,11 +63,11 @@ class _ProjectScreenState extends State<ProjectScreen> {
           'Projects',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
-        backgroundColor: Colors.transparent,
+        backgroundColor: Colors.transparent, 
         elevation: 2,
 
         actions: [
-          IconButton(
+          IconButton( 
             onPressed: () {
               Navigator.of(context).pushAndRemoveUntil( 
                 MaterialPageRoute(builder: (context) => LoginScreen()),

@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:yelloskye/core/constants/colors.dart';
 import 'package:yelloskye/models/project_model.dart';
-import 'package:yelloskye/view/project/widgets/project_detail_screen.dart';
+import 'package:yelloskye/view/project/projectdetails/project_detail_screen.dart';
 
 class ProjectCard extends StatelessWidget {
   final Project project;

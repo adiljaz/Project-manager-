@@ -9,9 +9,10 @@ plugins {
 }
 
 android {
-    namespace = "com.example.yelloskye"
-    compileSdk = flutter.compileSdkVersion
-    ndkVersion = "27.0.12077973" 
+    // Define the namespace for your app/module
+    namespace = "com.example.yelloskye" // Ensure this matches your app's unique namespace
+    compileSdk = flutter.compileSdkVersion // Use the SDK version defined by Flutter
+    ndkVersion = "27.0.12077973" // Check that this is compatible with your project requirements
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -19,29 +20,26 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11.toString()
+        jvmTarget = JavaVersion.VERSION_11.toString() // Set JVM target to 11
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.example.yelloskye"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://flutter.dev/to/review-gradle-config.
+        applicationId = "com.example.yelloskye" // Unique app ID for your project
         minSdk = 23
-        targetSdk = 34
-        versionCode = flutter.versionCode
-        versionName = flutter.versionName
+        targetSdk = 34 // Ensure this matches your target SDK version
+        versionCode = flutter.versionCode // From Flutter's versioning
+        versionName = flutter.versionName // From Flutter's versioning
     }
 
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = signingConfigs.getByName("debug") // Set up your release signing key if needed
         }
     }
 }
 
 flutter {
-    source = "../.."
+    source = "../.." // Path to your Flutter SDK; adjust if necessary
 }
+
+ 

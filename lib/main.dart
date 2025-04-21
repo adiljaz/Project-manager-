@@ -19,7 +19,7 @@ import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:yelloskye/view/splash/splash.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized(); 
+  WidgetsFlutterBinding.ensureInitialized();
   
   // Set preferred orientations (optional)
   await SystemChrome.setPreferredOrientations([

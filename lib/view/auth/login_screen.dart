@@ -7,6 +7,7 @@ import 'package:yelloskye/core/constants/validator.dart';
 import 'package:yelloskye/core/constants/colors.dart';
 import 'package:yelloskye/view/auth/forgot_password_screen.dart';
 import 'package:yelloskye/view/auth/signup_screen.dart';
+import 'package:yelloskye/view/home_screen.dart';
 import 'package:yelloskye/widgets/custom_text_field.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -86,11 +87,10 @@ class _LoginScreenState extends State<LoginScreen>
           } else if (state is AuthAuthenticated) {
             // Navigate to home screen when authenticated
             // Using pushNamedAndRemoveUntil to clear the navigation stack
-            Navigator.pushNamedAndRemoveUntil(
-              context,
-              '/home',
-              (route) => false,
-            );
+           Navigator.of(context).pushAndRemoveUntil(
+  MaterialPageRoute(builder: (context) => HomeScreen()), // Replace with your actual home screen
+  (route) => false,
+);
           }
         },
         builder: (context, state) {

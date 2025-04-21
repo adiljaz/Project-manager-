@@ -82,11 +82,11 @@ class _SignupScreenState extends State<SignupScreen>
                 margin: EdgeInsets.all(12),
               ),
             );
-          } else if (state is AuthAuthenticated) {
+          } else if (state is AuthAuthenticated) { 
             // Use direct navigation instead of named routes
-            Navigator.pushReplacement(
+            Navigator.pushAndRemoveUntil(
               context,
-              MaterialPageRoute(builder: (context) => HomeScreen()),
+              MaterialPageRoute(builder: (context) => HomeScreen() ), (route) => false,  
             );
           }
         },

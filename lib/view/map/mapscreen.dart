@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
-import '../project/widgets/project_detail_screen.dart';
+import '../project/projectdetails/project_detail_screen.dart';
 import '../../bloc/project/project_cubit.dart';
 import '../../models/project_model.dart';
 import '../../core/constants/colors.dart';
@@ -25,7 +25,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    
+
     // Initialize animation controller
     _sheetAnimationController = AnimationController(
       vsync: this,
@@ -56,7 +56,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
           if (state.errorMessage != null) {
             _showSnackBar(context, state.errorMessage!);
           }
-          
+
           // Handle animation controllers
           if (state.isListVisible) {
             _sheetAnimationController.forward();
@@ -66,7 +66,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
         },
         builder: (context, state) {
           final mapCubit = context.read<MapCubit>();
-          
+
           return Scaffold(
             extendBodyBehindAppBar: true,
             appBar: AppBar(
@@ -99,11 +99,19 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
                   top: 100,
                   left: 16,
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 10,
+                    ),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(24),
-                      boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.15), blurRadius: 8)],
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.15),
+                          blurRadius: 8,
+                        ),
+                      ],
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
@@ -123,7 +131,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
                 ),
 
                 // Selected project card
-                if (state.selectedProject != null) 
+                if (state.selectedProject != null)
                   _buildProjectCard(context, state.selectedProject!),
 
                 // Project list bottom sheet
@@ -137,7 +145,9 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
               icon: Icon(state.isListVisible ? Icons.close : Icons.list),
               label: Text(state.isListVisible ? 'Close' : 'Projects'),
               elevation: 4,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
             ),
           );
         },
@@ -158,7 +168,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
 
   Widget _buildMap(BuildContext context, MapState state) {
     final mapCubit = context.read<MapCubit>();
-    
+
     return FlutterMap(
       mapController: mapCubit.mapController,
       options: MapOptions(
@@ -196,7 +206,12 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(25),
                     color: AppColors.primary,
-                    boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.2), blurRadius: 6)],
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.2),
+                        blurRadius: 6,
+                      ),
+                    ],
                   ),
                   child: Center(
                     child: Text(
@@ -231,14 +246,19 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(16),
-            boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 10)],
+            boxShadow: [
+              BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 10),
+            ],
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               CircularProgressIndicator(color: AppColors.primary),
               const SizedBox(height: 16),
-              const Text('Loading projects...', style: TextStyle(fontWeight: FontWeight.bold)),
+              const Text(
+                'Loading projects...',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
             ],
           ),
         ),
@@ -249,126 +269,164 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
   Widget _buildProjectCard(BuildContext context, Project project) {
     final mapCubit = context.read<MapCubit>();
     
+    // Get available screen height to constrain card size
+    final screenHeight = MediaQuery.of(context).size.height;
+    final maxCardHeight = screenHeight * 0.5; // Limit to 50% of screen height
+
     return Positioned(
       bottom: 16,
       left: 16,
       right: 16,
-      child: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        elevation: 8,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Stack(
-              children: [
-                ClipRRect(
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-                  child: SizedBox(
-                    height: 120,
-                    width: double.infinity,
-                    child: project.thumbnail != null && project.thumbnail!.isNotEmpty
-                        ? Image.memory(
-                            base64Decode(project.thumbnail!),
-                            fit: BoxFit.cover,
-                            errorBuilder: (_, __, ___) => _buildPlaceholder(),
-                          )
-                        : _buildPlaceholder(),
-                  ),
-                ),
-                Positioned(
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [Colors.transparent, Colors.black.withOpacity(0.7)],
-                      ),
-                    ),
-                    child: Text(
-                      project.name,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                ),
-                Positioned(
-                  top: 8,
-                  right: 8,
-                  child: CircleAvatar(
-                    backgroundColor: Colors.black.withOpacity(0.5),
-                    radius: 16,
-                    child: IconButton(
-                      padding: EdgeInsets.zero,
-                      icon: const Icon(Icons.close, size: 18, color: Colors.white),
-                      onPressed: () => mapCubit.clearSelectedProject(),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+      child: ConstrainedBox(
+        constraints: BoxConstraints(maxHeight: maxCardHeight),
+        child: Card(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          elevation: 8,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Stack(
                 children: [
-                  if (project.description != null && project.description!.isNotEmpty)
-                    Text(
-                      project.description!,
-                      style: TextStyle(fontSize: 14, color: Colors.grey[600]),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
+                  ClipRRect(
+                    borderRadius: const BorderRadius.vertical(
+                      top: Radius.circular(16),
                     ),
-                  const SizedBox(height: 12),
-                  Row(
-                    children: [
-                      Icon(Icons.location_on, size: 16, color: AppColors.primary),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: Text(
-                          project.locationName ?? 'Unknown location',
-                          style: TextStyle(fontSize: 14, color: Colors.grey[600]),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
+                    child: SizedBox(
+                      height: 120,
+                      width: double.infinity,
+                      child:
+                          project.thumbnail != null &&
+                                  project.thumbnail!.isNotEmpty
+                              ? Image.memory(
+                                base64Decode(project.thumbnail!),
+                                fit: BoxFit.cover,
+                                errorBuilder: (_, __, ___) => _buildPlaceholder(),
+                              )
+                              : _buildPlaceholder(),
+                    ),
+                  ),
+                  Positioned(
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Colors.transparent,
+                            Colors.black.withOpacity(0.7),
+                          ],
                         ),
                       ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () => _navigateToProjectDetails(context, project),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primary,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      child: Text(
+                        project.name,
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      child: const Text('View Details'),
+                    ),
+                  ),
+                  Positioned(
+                    top: 8,
+                    right: 8,
+                    child: CircleAvatar(
+                      backgroundColor: Colors.black.withOpacity(0.5),
+                      radius: 16,
+                      child: IconButton(
+                        padding: EdgeInsets.zero,
+                        icon: const Icon(
+                          Icons.close,
+                          size: 18,
+                          color: Colors.white,
+                        ),
+                        onPressed: () => mapCubit.clearSelectedProject(),
+                      ),
                     ),
                   ),
                 ],
               ),
-            ),
-          ],
+              // Use Expanded and SingleChildScrollView to prevent overflow
+              Flexible(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (project.description != null &&
+                          project.description!.isNotEmpty)
+                        Text(
+                          project.description!,
+                          style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      const SizedBox(height: 12),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.location_on,
+                            size: 16,
+                            color: AppColors.primary,
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              project.locationName ?? 'Unknown location',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey[600],
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed:
+                              () => _navigateToProjectDetails(context, project),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.primary,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          child: const Text('View Details'),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
-
+ 
   void _navigateToProjectDetails(BuildContext context, Project project) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => ProjectDetailScreen(projectId: project.id)),
+      MaterialPageRoute(
+        builder: (context) => ProjectDetailScreen(projectId: project.id),
+      ),
     );
   }
 
@@ -376,54 +434,67 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
     return Container(
       color: AppColors.primary.withOpacity(0.1),
       child: Center(
-        child: Icon(Icons.photo, size: 40, color: AppColors.primary.withOpacity(0.5)),
+        child: Icon(
+          Icons.photo,
+          size: 40,
+          color: AppColors.primary.withOpacity(0.5),
+        ),
       ),
     );
   }
 
-  Widget _buildProjectListSheet(BuildContext context, MapState state) {
-    final mapCubit = context.read<MapCubit>();
-    
-    return AnimatedBuilder(
-      animation: _sheetAnimation,
-      builder: (context, child) {
-        // Calculate sheet height based on available screen space
-        final maxHeight = MediaQuery.of(context).size.height * 0.7;
-        final bottomPadding = MediaQuery.of(context).padding.bottom;
-        final sheetHeight = (maxHeight - bottomPadding) * _sheetAnimation.value;
-        
-        return Positioned(
-          bottom: 0,
-          left: 0,
-          right: 0,
-          height: sheetHeight,
-          child: Visibility(
-            visible: _sheetAnimation.value > 0,
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-                boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.15), blurRadius: 10)],
-              ),
-              child: SafeArea(
-                top: false,
+Widget _buildProjectListSheet(BuildContext context, MapState state) {
+  final mapCubit = context.read<MapCubit>();
+
+  return AnimatedBuilder(
+    animation: _sheetAnimation,
+    builder: (context, child) {
+      final maxHeight = MediaQuery.of(context).size.height * 0.7;
+      final bottomPadding = MediaQuery.of(context).padding.bottom;
+      final sheetHeight = (maxHeight - bottomPadding) * _sheetAnimation.value;
+
+      if (_sheetAnimation.value == 0) return const SizedBox.shrink();
+
+      return Positioned(
+        bottom: 0,
+        left: 0,
+        right: 0,
+        height: sheetHeight,
+        child: Material(
+          color: Colors.transparent,
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black12,
+                  blurRadius: 15,
+                  offset: Offset(0, -3),
+                ),
+              ],
+            ),
+            child: SafeArea(
+              top: false,
+              child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                padding: const EdgeInsets.only(bottom: 16),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     // Handle bar
                     Padding(
-                      padding: const EdgeInsets.only(top: 12, bottom: 8),
-                      child: Center(
-                        child: Container(
-                          width: 40,
-                          height: 5,
-                          decoration: BoxDecoration(
-                            color: Colors.grey[300],
-                            borderRadius: BorderRadius.circular(2.5),
-                          ),
+                      padding: const EdgeInsets.only(top: 10, bottom: 12),
+                      child: Container(
+                        width: 40,
+                        height: 5,
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade300,
+                          borderRadius: BorderRadius.circular(10),
                         ),
                       ),
                     ),
+
                     // Title
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -432,51 +503,69 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
                         children: [
                           Row(
                             children: [
-                              Icon(Icons.map, color: AppColors.primary),
+                              Icon(Icons.map_rounded, color: AppColors.primary, size: 24),
                               const SizedBox(width: 8),
-                              const Text('Project List', 
-                                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                              const Text(
+                                'Project List',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
                             ],
                           ),
                           IconButton(
                             onPressed: () => mapCubit.toggleProjectList(),
-                            icon: const Icon(Icons.close),
+                            icon: const Icon(Icons.close_rounded, size: 24),
                           ),
                         ],
                       ),
                     ),
-                    // List
-                    Expanded(
-                      child: state.projects.isEmpty
-                          ? _buildEmptyListMessage()
-                          : ListView.builder(
-                              padding: const EdgeInsets.all(16),
-                              itemCount: state.projects.length,
-                              itemBuilder: (context, index) => _buildProjectListItem(
-                                context, 
-                                state.projects[index]
-                              ),
-                            ),
-                    ),
+
+                    const SizedBox(height: 8),
+
+                    // Project List
+                    state.projects.isEmpty
+                        ? Padding(
+                            padding: const EdgeInsets.all(24.0),
+                            child: _buildEmptyListMessage(),
+                          )
+                        : ListView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            itemCount: state.projects.length,
+                            itemBuilder: (context, index) {
+                              return _buildProjectListItem(context, state.projects[index]);
+                            },
+                          ),
                   ],
                 ),
               ),
             ),
           ),
-        );
-      },
-    );
-  }
+        ),
+      );
+    },
+  );
+} 
+
 
   Widget _buildEmptyListMessage() {
-    return Center(
+    return Center( 
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(Icons.location_off, size: 48, color: Colors.grey[400]),
           const SizedBox(height: 16),
-          Text('No projects found', 
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.grey[700])),
+          Text(
+            'No projects found',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.grey[700],
+            ),
+          ),
         ],
       ),
     );
@@ -484,7 +573,7 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
 
   Widget _buildProjectListItem(BuildContext context, Project project) {
     final mapCubit = context.read<MapCubit>();
-    
+
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -508,19 +597,24 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
                 child: SizedBox(
                   width: 60,
                   height: 60,
-                  child: project.thumbnail != null && project.thumbnail!.isNotEmpty
-                      ? Image.memory(
-                          base64Decode(project.thumbnail!),
-                          fit: BoxFit.cover,
-                          errorBuilder: (_, __, ___) => Container(
+                  child:
+                      project.thumbnail != null && project.thumbnail!.isNotEmpty
+                          ? Image.memory(
+                            base64Decode(project.thumbnail!),
+                            fit: BoxFit.cover,
+                            errorBuilder:
+                                (_, __, ___) => Container(
+                                  color: AppColors.primary.withOpacity(0.1),
+                                  child: Icon(
+                                    Icons.photo,
+                                    color: AppColors.primary,
+                                  ),
+                                ),
+                          )
+                          : Container(
                             color: AppColors.primary.withOpacity(0.1),
                             child: Icon(Icons.photo, color: AppColors.primary),
                           ),
-                        )
-                      : Container(
-                          color: AppColors.primary.withOpacity(0.1),
-                          child: Icon(Icons.photo, color: AppColors.primary),
-                        ),
                 ),
               ),
               const SizedBox(width: 12),
@@ -531,11 +625,15 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
                   children: [
                     Text(
                       project.name,
-                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    if (project.description != null && project.description!.isNotEmpty) ...[
+                    if (project.description != null &&
+                        project.description!.isNotEmpty) ...[
                       const SizedBox(height: 4),
                       Text(
                         project.description!,
@@ -547,12 +645,19 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
                     const SizedBox(height: 4),
                     Row(
                       children: [
-                        Icon(Icons.location_on, size: 12, color: AppColors.primary),
+                        Icon(
+                          Icons.location_on,
+                          size: 12,
+                          color: AppColors.primary,
+                        ),
                         const SizedBox(width: 4),
                         Expanded(
                           child: Text(
                             project.locationName ?? 'Unknown location',
-                            style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey[600],
+                            ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -564,9 +669,9 @@ class _MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
               ),
               Icon(Icons.chevron_right, color: Colors.grey[400]),
             ],
-          ), 
+          ),
         ),
-      ),  
+      ),
     );
   }
 }

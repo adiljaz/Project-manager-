@@ -1,21 +1,40 @@
-import 'package:yelloskye/models/user_model.dart';
+import 'package:equatable/equatable.dart';
 
-abstract class AuthState {}
-
-class AuthInitial extends AuthState {}
-
-class AuthLoading extends AuthState {}
-
-class AuthAuthenticated extends AuthState {
-  final UserModel user;
+abstract class AuthState extends Equatable {
+  const AuthState();
   
-  AuthAuthenticated(this.user);
+  @override
+  List<Object?> get props => [];
 }
 
+// Initial state
+class AuthInitial extends AuthState {}
+
+// Loading state during authentication operations
+class AuthLoading extends AuthState {}
+
+// Authenticated state with user ID
+class AuthAuthenticated extends AuthState {
+  final String userId;
+  
+  const AuthAuthenticated({required this.userId});
+  
+  @override
+  List<Object?> get props => [userId];
+}
+
+// Unauthenticated state
 class AuthUnauthenticated extends AuthState {}
 
+// Error state with error message
 class AuthError extends AuthState {
   final String message;
   
-  AuthError(this.message);
-}  
+  const AuthError(this.message);
+  
+  @override
+  List<Object?> get props => [message];
+}
+
+// Password reset email sent
+class AuthPasswordResetSent extends AuthState {}
